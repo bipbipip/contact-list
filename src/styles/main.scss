@@ -1,42 +1,235 @@
-// Переменные
-$primary-color: #3498db;
-$secondary-color: #2ecc71;
-$font-stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+@import "./variables";
 
-// Миксины
-@mixin flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-// Стили
-body {
-  margin: 0;
+* {
+  box-sizing: border-box;
   padding: 0;
-  font-family: $font-stack;
-  background: linear-gradient(135deg, $primary-color, $secondary-color);
-  min-height: 100vh;
+  margin: 0;
 }
 
-#app {
-  @include flex-center;
+@font-face {
+  font-family: "Circe Bold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Circe Bold"),
+  url("../assets/fonts/Circe-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Circe Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Circe Regular"),
+  url("../assets/fonts/Circe-Regular.woff2") format("woff2");
+}
+
+body {
+  background: #F6F7F9;
+}
+
+button {
+  cursor: pointer;
+}
+
+.header-body{
+  display: flex;
+  flex-direction: row;
+  padding: 0 16px;
+  height: $header-height;
+  justify-content: space-between;
+  background: $main-color;
+  align-items: center;
+
+}
+
+.header-logo {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-family: "Circe Bold", serif;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.btn {
+  font-family: "Circe Bold", serif;
+  font-size: 14px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  line-height: 130%;
+
+  &-blue {
+    background: $accent-color;
+    color: $main-color;
+    transition: background 0.3s;
+
+    &:hover {
+      background: #0047C6;
+    }
+  }
+
+  &-white {
+    background: $main-color;
+    color: $accent-color;
+    transition: background 0.3s;
+
+    &:hover {
+      background: rgba($accent-color, 0.1);
+
+    }
+  }
+}
+
+.container {
+
+}
+.contact-list {
+  display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  color: white;
-  text-align: center;
+  padding: 24px 16px 0;
+  align-items: center;
+  min-height: calc(100dvh - $header-height);
 
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  }
+}
+.contact-list-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
 
-  p {
-    font-size: 1.2rem;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    backdrop-filter: blur(5px);
+.add-contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #F81155;
+  color: $main-color;
+  font-family: "Circe Bold", serif;
+  font-size: 14px;
+  padding: 16px 0;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.contact-list-empty {
+  width: 100%;
+  font-family: "Circe Regular", serif;
+  font-size: 18px;
+  color: #000;
+  opacity: 30%;
+}
+
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: end;
+
+  &.active {
+    display: flex;
   }
+}
+
+.modal-content {
+  background: $main-color;
+  width: 90%;
+  max-width: 312px;
+  padding: 0 24px;
+  animation: slideDown 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateX(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 23px 0;
+  border-bottom: 1px solid #E5E7EB;
+
+  h2 {
+    font-family: "Circe Bold", serif;
+    font-size: 18px;
+    margin: 0;
+  }
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+
+  &:hover {
+    color: #333;
+  }
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  margin: 24px 0;
+  height: 100%;
+  gap: 16px;
+
+  .group-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: "Circe Regular", serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    span {
+      background: #F5F5F5;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+    }
+    .delete-icon{
+      background-image: url("../assets/icon/delete-icon.svg");
+      width: 38px;
+      height: 38px;
+      border: none;
+      outline: none;
+      flex-shrink: 0;
+      flex-grow: 0;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-image: url("../assets/icon/delete-icon-hover.svg");
+
+      }
+    }
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: end;
+  gap: 12px;
+  margin-bottom: 24px;
 }
