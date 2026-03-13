@@ -3,12 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Мой проект на Vite</title>
+  <title>Список контактов</title>
+  <script type="module" src="scripts/main.ts"></script>
 </head>
 <body>
-<div id="app">
-  <h1>Привет, мир!</h1>
-</div>
-<script type="module" src="./scripts/main.ts"></script>
+
+<header class="header container">
+  <div class="header-body">
+    <a href="index.html" class="header-logo">
+      <img src="assets/icon/contact-book-1.svg" alt="logo picture"/>
+      <p class="logo-text">Книга контактов</p>
+    </a>
+    <button class="btn btn-blue" id="group-btn">Группы</button>
+  </div>
+</header>
+<main>
+  <section class="contact-list container">
+    <button class="add-contact">Добавить контакт <img src="assets/icon/add.svg" alt="add icon"/></button>
+    <div class="contact-list-body">
+      <p class="contact-list-empty">Список контактов пуст</p>
+    </div>
+  </section>
+  <div class="modal-overlay" id="groupsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Группы контактов</h2>
+        <button class="close-btn" id="closeModal">×</button>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-white" id="addGroupBtn">Добавить</button>
+        <button class="btn btn-blue" id="saveBtn">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</main>
 </body>
 </html>
