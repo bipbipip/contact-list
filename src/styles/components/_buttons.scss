@@ -1,0 +1,28 @@
+@import "../variables";
+
+.btn {
+  @include font-bold;
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  line-height: 130%;
+  transition: background 0.3s;
+
+  &_blue {
+    background: $accent-color;
+    color: $main-color;
+
+    &:hover {
+      background: #0047C6;
+    }
+  }
+
+  &_white {
+    background: $main-color;
+    color: $accent-color;
+
+    &:hover {
+      background: rgba($accent-color, 0.1);
+    }
+  }
+}

@@ -1,3 +1,31 @@
+$header-height: 60px;
 $main-color: #FFFFFF;
-$accent-color: #005BFE;
-$header-height: 70px;
+$accent-color: #0066FF;
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin font-regular {
+  font-family: "Circe Regular", serif;
+}
+
+@mixin font-bold {
+  font-family: "Circe Bold", serif;
+}
+
+@mixin icon-button($icon, $hover-icon) {
+  background-image: url($icon);
+  border: none;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &:hover {
+    background-image: url($hover-icon);
+  }
+}
