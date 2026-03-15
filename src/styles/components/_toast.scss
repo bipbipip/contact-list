@@ -1,0 +1,101 @@
+@import "../variables";
+
+.toast-container {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  min-width: 209px;
+  max-width: 400px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(120%);
+  transition: transform 0.3s ease;
+  pointer-events: auto;
+
+  &_show {
+    transform: translateX(0);
+  }
+
+  &_success {
+
+    .toast__icon {
+      background-image: url("../../assets/icon/success-icon.svg");
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &_error {
+
+    .toast__icon {
+      background-image: url("../../assets/icon/fail-icon.svg");
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &_info {
+
+    .toast__icon {
+      background-image: url("../../assets/icon/info-icon.svg");
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &_warning {
+
+    .toast__icon::before {
+      content: "⚠";
+      color: #FF9800;
+    }
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  &__message {
+    @include font-regular;
+    font-size: 14px;
+    color: #333;
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  &__close-btn {
+    width: 20px;
+    height: 20px;
+    background-image: url("../../assets/icon/close.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

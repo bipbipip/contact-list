@@ -1,0 +1,65 @@
+@import "../variables";
+
+.contact-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1160px;
+  width: 100%;
+}
+
+.contact-group {
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  background: white;
+  overflow: hidden;
+  padding: 24px;
+
+  &__header {
+    background: $main-color;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+
+  }
+
+  &__title {
+    @include font-bold;
+    font-size: 18px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &.expanded {
+      color: #0066FF;
+    }
+  }
+
+  &__arrow {
+    width: 20px;
+    height: 20px;
+    background-image: url("../../assets/icon/dropdown-arrow.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.2s;
+  }
+
+  &__content {
+    display: none;
+
+    &.expanded {
+      display: block;
+    }
+  }
+
+  &__contacts {
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1) ;
+  }
+}

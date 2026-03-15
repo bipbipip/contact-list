@@ -8,37 +8,115 @@
 </head>
 <body>
 
-<header class="header container">
-  <div class="header-body">
-    <a href="index.html" class="header-logo">
-      <img src="assets/icon/contact-book-1.svg" alt="logo picture"/>
-      <p class="logo-text">Книга контактов</p>
-    </a>
-    <button class="btn btn-blue" id="group-btn">Группы</button>
+<header class="header">
+  <div class="header__container container">
+    <div class="header__body">
+      <a href="index.html" class="header__logo">
+        <img class="header__logo-icon" src="assets/icon/contact-book-1.svg" alt="logo picture"/>
+        <span class="header__logo-text">Книга контактов</span>
+      </a>
+      <div class="header__buttons">
+        <button class="contact-list__add-btn">
+          <span class="contact-list__add-text">Добавить контакт</span>
+          <img class="contact-list__add-icon" src="assets/icon/add.svg" alt="add icon"/>
+        </button>
+      <button class="header__group-btn btn btn_blue" id="group-btn">Группы</button>
+      </div>
+    </div>
   </div>
 </header>
+
 <main>
-  <section class="contact-list container">
-    <button class="add-contact">Добавить контакт <img src="assets/icon/add.svg" alt="add icon"/></button>
-    <div class="contact-list-body">
-      <p class="contact-list-empty">Список контактов пуст</p>
+  <section class="contact-list">
+    <div class="contact-list__container container">
+      <button class="contact-list__add-btn">
+        <span class="contact-list__add-text">Добавить контакт</span>
+        <img class="contact-list__add-icon" src="assets/icon/add.svg" alt="add icon"/>
+      </button>
+
+      <div class="contact-list__body">
+        <div class="contact-list__empty">
+          <p class="contact-list__empty-text">Список контактов пуст</p>
+        </div>
+      </div>
     </div>
   </section>
-  <div class="modal-overlay" id="groupsModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Группы контактов</h2>
-        <button class="close-btn" id="closeModal">×</button>
-      </div>
-      <div class="modal-body">
 
+  <div class="modal" id="groupsModal">
+    <div class="modal__overlay">
+      <div class="modal__content">
+        <div class="modal__header">
+          <div class="modal__header-container">
+            <h2 class="modal__title">Группы контактов</h2>
+            <button class="modal__close-btn" id="closeModal">×</button>
+          </div>
+        </div>
+
+        <div class="modal__body">
+          <div class="modal__body-container">
+          </div>
+        </div>
+
+        <div class="modal__footer">
+          <div class="modal__footer-container">
+            <button class="modal__footer-btn btn btn_white" id="addGroupBtn">Добавить</button>
+            <button class="modal__footer-btn btn btn_blue" id="saveBtn">Сохранить</button>
+          </div>
+        </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-white" id="addGroupBtn">Добавить</button>
-        <button class="btn btn-blue" id="saveBtn">Сохранить</button>
+    </div>
+  </div>
+
+  <div class="modal" id="contactModal">
+    <div class="modal__overlay">
+      <div class="modal__content">
+        <div class="modal__header">
+          <div class="modal__header-container">
+            <h2 class="modal__title">Добавление контакта</h2>
+            <button class="modal__close-btn" id="closeContactModal">×</button>
+          </div>
+        </div>
+
+        <div class="modal__body">
+          <div class="modal__body-container">
+            <form class="contact-form" id="contactForm">
+              <div class="contact-form__field">
+                <input
+                        type="text"
+                        id="contactName"
+                        class="contact-form__input"
+                        placeholder="Введите ФИО"
+                        required
+                />
+              </div>
+
+              <div class="contact-form__field">
+                <input
+                        type="text"
+                        id="contactPhone"
+                        class="contact-form__input"
+                        placeholder="+7 (___) ___-__-__"
+                        required
+                />
+              </div>
+
+              <div class="contact-form__field">
+                <div id="contactGroupDropdown"></div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="modal__footer">
+          <div class="modal__footer-container">
+            <button class="modal__footer-btn btn btn_white" id="cancelContactBtn">Отмена</button>
+            <button class="modal__footer-btn btn btn_blue" id="saveContactBtn">Сохранить</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </main>
+
 </body>
 </html>
