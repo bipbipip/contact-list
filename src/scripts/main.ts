@@ -119,6 +119,9 @@ document.getElementById('group-btn')?.addEventListener('click', () => {
     groupsModal.open();
 });
 
-document.querySelector('.contact-list__add-btn')?.addEventListener('click', () => {
-    contactModal.open();
+const addContactButtons = document.querySelectorAll('.contact-list__add-btn');
+addContactButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        contactModal.open();
+    });
 });

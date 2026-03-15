@@ -8,6 +8,7 @@
 @import "components/dropdown";
 @import "components/toast";
 
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -35,7 +36,7 @@ button {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1920px;
   margin: 0 auto;
   padding: 0 16px;
 }
@@ -65,6 +66,15 @@ button {
       font-size: 18px;
       color: inherit;
     }
+
+
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    max-height: 38px;
   }
 
   &__group-btn {
@@ -99,7 +109,13 @@ button {
     &:hover {
       background: #D1003E;
     }
+
+    display: none;
+    @media (max-width: 767px) {
+      display: flex;
+    }
   }
+
 
   &__body {
     display: flex;
@@ -109,12 +125,17 @@ button {
     width: 100%;
   }
 
+
   &__empty-text {
+    display: flex;
     width: 100%;
     @include font-regular;
     font-size: 18px;
     color: #000;
     opacity: 30%;
     text-align: center;
+    justify-content: center;
   }
 }
+
+@import "components/media";
