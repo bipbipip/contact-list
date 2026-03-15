@@ -5,6 +5,7 @@ import { ContactModal } from './components/contactModal';
 import { GroupsModal } from './components/groupsModal';
 import { ContactList } from './components/contactList';
 import { ConfirmModal } from './components/confirmModal';
+import { Toast } from './components/toast';
 import { Group } from './models/group';
 import { Contact } from './models/contact';
 import { generateId } from './utils/helpers';
@@ -26,16 +27,26 @@ const contactModal = new ContactModal('contactModal', {
         if (isEdit && editId) {
             const index = contacts.findIndex(c => c.id === editId);
             if (index !== -1) {
+                const oldContact = contacts[index];
                 contacts[index] = new Contact(editId, name, phone, groupId);
+                StorageService.saveContacts(contacts);
+                contactList.setData(contacts, groups);
+                contactModal.close();
+
+                if (oldContact.phone !== phone) {
+                    Toast.success(`Контакт "${name}" успешно изменен`);
+                } else {
+                    Toast.success(`Контакт "${name}" успешно изменен`);
+                }
             }
         } else {
             const newContact = new Contact(generateId(), name, phone, groupId);
             contacts.push(newContact);
+            StorageService.saveContacts(contacts);
+            contactList.setData(contacts, groups);
+            contactModal.close();
+            Toast.success(`Контакт "${name}" успешно создан`);
         }
-
-        StorageService.saveContacts(contacts);
-        contactList.setData(contacts, groups);
-        contactModal.close();
     }
 });
 
@@ -43,9 +54,20 @@ const groupsModal = new GroupsModal('groupsModal', {
     onGroupsChange: (updatedGroups) => {
         const deletedGroups = groups.filter(g => !updatedGroups.find(ug => ug.id === g.id));
 
+        const expandedGroups = StorageService.getExpandedGroups();
+
         deletedGroups.forEach(group => {
+            delete expandedGroups[group.id];
+
+            const contactsInGroup = contacts.filter(c => c.groupId === group.id);
             contacts = contacts.filter(c => c.groupId !== group.id);
+
+            if (contactsInGroup.length > 0) {
+                Toast.warning(`Удалено ${contactsInGroup.length} контактов из группы "${group.name}"`);
+            }
         });
+
+        StorageService.saveExpandedGroups(expandedGroups);
 
         groups = updatedGroups;
         StorageService.saveGroups(groups);
@@ -78,6 +100,7 @@ const contactList = new ContactList('.contact-list__body', {
                 contacts = contacts.filter(c => c.id !== contactId);
                 StorageService.saveContacts(contacts);
                 contactList.setData(contacts, groups);
+                Toast.error(`Контакт "${contact.name}" удален`);
             }
         }).show();
     }
@@ -86,6 +109,7 @@ const contactList = new ContactList('.contact-list__body', {
 groups = StorageService.loadGroups();
 contacts = StorageService.loadContacts();
 
+contactModal.setContacts(contacts);
 contactModal.setDropdown(contactDropdown);
 contactModal.setGroups(groups);
 contactList.setData(contacts, groups);
@@ -97,9 +121,4 @@ document.getElementById('group-btn')?.addEventListener('click', () => {
 
 document.querySelector('.contact-list__add-btn')?.addEventListener('click', () => {
     contactModal.open();
-});
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-    }
 });

@@ -1,6 +1,8 @@
 $header-height: 60px;
 $main-color: #FFFFFF;
-$accent-color: #0066FF;
+$accent-color: #005BFE;
+$form-background: rgba(0,0,0,0.05);
+$error-color: #EA3D2F;
 
 @mixin flex-center {
   display: flex;

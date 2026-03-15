@@ -1,3 +1,5 @@
+import { Contact } from '../models/contact';
+
 export class ValidationService {
     static showError(input: HTMLElement, message: string): void {
         const fieldContainer = input.closest('.contact-form__field');
@@ -30,6 +32,7 @@ export class ValidationService {
         dropdownField: HTMLElement | null
     ): boolean {
         let isValid = true;
+
         this.hideError(nameInput);
         this.hideError(phoneInput);
         dropdownField?.querySelector('.contact-form__error-text')?.remove();
@@ -53,5 +56,21 @@ export class ValidationService {
         }
 
         return isValid;
+    }
+
+    static isPhoneUnique(phone: string, contacts: Contact[], excludeContactId?: string): boolean {
+        const normalizedPhone = this.normalizePhone(phone);
+        return !contacts.some(contact =>
+            this.normalizePhone(contact.phone) === normalizedPhone &&
+            contact.id !== excludeContactId
+        );
+    }
+
+    static normalizePhone(phone: string): string {
+        return phone.replace(/\D/g, '');
+    }
+
+    static isValidPhoneFormat(phone: string): boolean {
+        return !phone.includes('_') && phone.trim().length > 0;
     }
 }

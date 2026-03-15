@@ -5,6 +5,7 @@ import { StorageService } from '../services/storage';
 
 export class ContactList {
     private container: HTMLElement;
+    private emptyBlock: HTMLElement | null;
     private contacts: Contact[] = [];
     private groups: Group[] = [];
     private onEditContact: (contactId: string) => void;
@@ -18,6 +19,7 @@ export class ContactList {
         }
     ) {
         this.container = document.querySelector(containerSelector)!;
+        this.emptyBlock = this.container.querySelector('.contact-list__empty');
         this.onEditContact = options.onEditContact;
         this.onDeleteContact = options.onDeleteContact;
     }
@@ -30,15 +32,36 @@ export class ContactList {
 
     private render(): void {
         if (this.contacts.length === 0) {
-            this.container.innerHTML = '<p class="contact-list__empty-text">Список контактов пуст</p>';
+            this.showEmptyState();
             return;
         }
+
+        this.hideEmptyState();
 
         const contactsByGroup = this.groupContacts();
         const groupsHtml = this.renderGroups(contactsByGroup);
 
         this.container.innerHTML = `<div class="contact-groups">${groupsHtml}</div>`;
         this.attachEvents();
+    }
+
+    private showEmptyState(): void {
+        this.container.innerHTML = '';
+
+        if (this.emptyBlock) {
+            this.container.appendChild(this.emptyBlock);
+        } else {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'contact-list__empty';
+            emptyDiv.innerHTML = '<p class="contact-list__empty-text">Список контактов пуст</p>';
+            this.container.appendChild(emptyDiv);
+        }
+    }
+
+    private hideEmptyState(): void {
+        if (this.emptyBlock && this.container.contains(this.emptyBlock)) {
+            this.emptyBlock.remove();
+        }
     }
 
     private groupContacts(): Map<string, Contact[]> {

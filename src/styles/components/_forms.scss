@@ -16,18 +16,24 @@
 
   &__input {
     @include font-regular;
-    font-size: 16px;
-    padding: 12px 16px;
-    border: 1px solid #E5E7EB;
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid $form-background;
     border-radius: 6px;
-    background: #F5F5F5;
+    color: rgba(0, 0, 0, 0.5);
+    background: $form-background;
     transition: all 0.2s;
     width: 100%;
 
+    &:hover {
+      border: 1px solid $accent-color;
+      background: $form-background;
+    }
+
     &:focus {
-      outline: none;
-      border-color: #0066FF;
-      background: white;
+        outline: none;
+        border-color: $accent-color;
+        box-shadow: 0 0 5px rgba($accent-color, 0.4);
     }
 
     &::placeholder {
@@ -35,19 +41,18 @@
     }
 
     &.error {
-      border-color: #F81155;
-      background: rgba(248, 17, 85, 0.05);
+      border-color: $error-color;
 
       &:focus {
-        border-color: #F81155;
+        border-color: $error-color;
       }
     }
   }
 
   &__error-text {
     @include font-regular;
-    font-size: 12px;
-    color: #F81155;
+    font-size: 14px;
+    color: $error-color;
     margin-top: 4px;
     margin-left: 4px;
     animation: fadeIn 0.2s ease;
@@ -60,7 +65,7 @@
   justify-content: space-between;
   gap: 12px;
   @include font-regular;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
   width: 100%;
 
@@ -72,7 +77,8 @@
     transition: background-color 0.2s;
 
     &:hover {
-      background: darken(#F5F5F5, 5%);
+      border: 1px solid $accent-color;
+      background: $form-background;
     }
   }
 
@@ -95,7 +101,7 @@
 .new-group-input {
   flex: 1;
   @include font-regular;
-  font-size: 16px;
+  font-size: 14px;
   padding: 10px 12px;
   border: 1px solid #E5E7EB;
   border-radius: 6px;
@@ -104,9 +110,11 @@
 
   &:focus {
     outline: none;
-    border-color: #0066FF;
-    background: white;
+    border-color: $accent-color;
+    background: $form-background;
+    box-shadow: 0 0 5px rgba($accent-color, 0.4);
   }
+
 }
 
 .new-group-container {

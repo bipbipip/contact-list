@@ -1,6 +1,7 @@
 import { Group } from '../models/group';
 import { generateId } from '../utils/helpers';
 import { ConfirmModal } from './confirmModal';
+import { Toast } from './toast';
 
 export class GroupsModal {
     private modal: HTMLElement;
@@ -27,6 +28,14 @@ export class GroupsModal {
 
         this.modal.addEventListener('click', (e) => {
             if ((e.target as HTMLElement).classList.contains('modal__overlay')) {
+                Toast.clearAll();
+                this.close();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.overlay?.classList.contains('active')) {
+                Toast.clearAll();
                 this.close();
             }
         });
@@ -38,6 +47,8 @@ export class GroupsModal {
 
     open(): void {
         if (!this.overlay) return;
+
+        Toast.clearAll();
         this.editingGroupId = null;
         this.newGroupInput = null;
         this.render();
@@ -46,26 +57,50 @@ export class GroupsModal {
 
     close(): void {
         if (!this.overlay) return;
+
         this.editingGroupId = null;
         this.newGroupInput = null;
+
+        if (this.bodyContainer) {
+            this.bodyContainer.innerHTML = '';
+        }
+
+        Toast.clearAll();
         this.overlay.classList.remove('active');
     }
 
     private addNewGroup(): void {
         if (this.editingGroupId) this.editingGroupId = null;
+
         if (!this.newGroupInput && this.bodyContainer) {
-            this.bodyContainer.appendChild(this.createNewGroupInput());
+            const newInputContainer = this.createNewGroupInput();
+            this.bodyContainer.appendChild(newInputContainer);
+            this.render();
         }
     }
 
     private saveNewGroup(): void {
         if (this.newGroupInput) {
             const name = this.newGroupInput.value.trim();
-            if (name) {
-                const newGroup = new Group(generateId(), name);
-                this.groups.push(newGroup);
-                this.onGroupsChange(this.groups);
+
+            if (!name) {
+                Toast.removeByMessage('Введите название группы');
+                Toast.error('Введите название группы');
+                return;
             }
+
+            if (this.isGroupNameExists(name)) {
+                const errorMessage = `Группа "${name}" уже существует`;
+                Toast.removeByMessage(errorMessage);
+                Toast.error(errorMessage);
+                return;
+            }
+
+            const newGroup = new Group(generateId(), name);
+            this.groups.push(newGroup);
+            this.onGroupsChange(this.groups);
+            Toast.success(`Группа "${name}" создана`);
+
             this.newGroupInput = null;
             this.render();
         }
@@ -108,6 +143,7 @@ export class GroupsModal {
         span.className = 'group-item__name';
         span.textContent = group.name;
         span.addEventListener('click', () => {
+            Toast.clearAll();
             this.editingGroupId = group.id;
             this.render();
         });
@@ -117,6 +153,7 @@ export class GroupsModal {
         deleteBtn.setAttribute('aria-label', 'Удалить группу');
         deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+            Toast.clearAll();
             this.showDeleteConfirmation(group.id);
         });
 
@@ -139,6 +176,7 @@ export class GroupsModal {
 
         let isSaving = false;
         let outsideClickHandler: ((e: MouseEvent) => void) | null = null;
+        const oldName = group.name;
 
         const cleanup = () => {
             if (outsideClickHandler) {
@@ -150,12 +188,28 @@ export class GroupsModal {
         const saveEdit = (value: string) => {
             if (isSaving) return;
 
-            if (value.trim()) {
+            const trimmedValue = value.trim();
+
+            if (!trimmedValue) {
+                Toast.removeByMessage('Название группы не может быть пустым');
+                Toast.error('Название группы не может быть пустым');
+                return;
+            }
+
+            if (trimmedValue !== oldName && this.isGroupNameExists(trimmedValue, group.id)) {
+                const errorMessage = `Группа "${trimmedValue}" уже существует`;
+                Toast.removeByMessage(errorMessage);
+                Toast.error(errorMessage);
+                return;
+            }
+
+            if (trimmedValue !== oldName) {
                 isSaving = true;
                 const index = this.groups.findIndex(g => g.id === group.id);
                 if (index !== -1) {
-                    this.groups[index].name = value.trim();
+                    this.groups[index].name = trimmedValue;
                     this.onGroupsChange(this.groups);
+                    Toast.info(`Группа переименована из "${oldName}" в "${trimmedValue}"`);
                 }
             }
 
@@ -175,7 +229,22 @@ export class GroupsModal {
         outsideClickHandler = (e: MouseEvent) => {
             if (!input.contains(e.target as Node) && !container.contains(e.target as Node)) {
                 if (!isSaving) {
-                    saveEdit(input.value.trim());
+                    const isOverlay = (e.target as HTMLElement).classList.contains('modal__overlay');
+
+                    if (isOverlay) {
+                        Toast.clearAll();
+                        cleanup();
+                        this.editingGroupId = null;
+                        this.render();
+                        this.close();
+                    } else if (input.value.trim()) {
+                        saveEdit(input.value);
+                    } else {
+                        Toast.clearAll();
+                        cleanup();
+                        this.editingGroupId = null;
+                        this.render();
+                    }
                 }
             }
         };
@@ -192,6 +261,7 @@ export class GroupsModal {
         cancelBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            Toast.clearAll();
             cleanup();
             this.editingGroupId = null;
             this.render();
@@ -213,6 +283,13 @@ export class GroupsModal {
     }
 
     private createNewGroupInput(): HTMLElement {
+        if (this.newGroupInput) {
+            const existingContainer = this.newGroupInput.closest('.new-group-container');
+            if (existingContainer) {
+                return existingContainer as HTMLElement;
+            }
+        }
+
         const container = document.createElement('div');
         container.className = 'new-group-container';
 
@@ -235,12 +312,25 @@ export class GroupsModal {
             if (isSaving) return;
 
             const name = input.value.trim();
-            if (name) {
-                isSaving = true;
-                const newGroup = new Group(generateId(), name);
-                this.groups.push(newGroup);
-                this.onGroupsChange(this.groups);
+
+            if (!name) {
+                Toast.removeByMessage('Введите название группы');
+                Toast.error('Введите название группы');
+                return;
             }
+
+            if (this.isGroupNameExists(name)) {
+                const errorMessage = `Группа "${name}" уже существует`;
+                Toast.removeByMessage(errorMessage);
+                Toast.error(errorMessage);
+                return;
+            }
+
+            isSaving = true;
+            const newGroup = new Group(generateId(), name);
+            this.groups.push(newGroup);
+            this.onGroupsChange(this.groups);
+            Toast.success(`Группа "${name}" создана`);
 
             cleanup();
             this.newGroupInput = null;
@@ -258,9 +348,18 @@ export class GroupsModal {
         outsideClickHandler = (e: MouseEvent) => {
             if (!input.contains(e.target as Node) && !container.contains(e.target as Node)) {
                 if (!isSaving) {
-                    if (input.value.trim()) {
+                    const isOverlay = (e.target as HTMLElement).classList.contains('modal__overlay');
+
+                    if (isOverlay) {
+                        Toast.clearAll();
+                        cleanup();
+                        this.newGroupInput = null;
+                        this.render();
+                        this.close();
+                    } else if (input.value.trim()) {
                         saveNew();
                     } else {
+                        Toast.clearAll();
                         cleanup();
                         this.newGroupInput = null;
                         this.render();
@@ -281,6 +380,7 @@ export class GroupsModal {
         cancelBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            Toast.clearAll();
             cleanup();
             this.newGroupInput = null;
             this.render();
@@ -293,6 +393,13 @@ export class GroupsModal {
         return container;
     }
 
+    private isGroupNameExists(name: string, excludeGroupId?: string): boolean {
+        return this.groups.some(group =>
+            group.name.toLowerCase() === name.toLowerCase() &&
+            group.id !== excludeGroupId
+        );
+    }
+
     private showDeleteConfirmation(groupId: string): void {
         const group = this.groups.find(g => g.id === groupId);
         if (!group) return;
@@ -303,6 +410,7 @@ export class GroupsModal {
             onConfirm: () => {
                 this.groups = this.groups.filter(g => g.id !== groupId);
                 this.onGroupsChange(this.groups);
+                Toast.error(`Группа "${group.name}" удалена`);
 
                 if (this.editingGroupId === groupId) {
                     this.editingGroupId = null;
