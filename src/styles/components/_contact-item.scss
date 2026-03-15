@@ -31,10 +31,12 @@
     @include font-regular;
     font-size: 18px;
     color: rgba(0,0,0, 0.5);
+    flex: 1;
   }
 
   &__stack {
     display: flex;
+    flex: 1;
     width: 100%;
     justify-content: space-between;
     gap: 34px;
